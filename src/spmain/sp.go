@@ -548,11 +548,9 @@ func (dsp *DijksraSP) findSP(r *http.Request) error {
 			}
 
 			newDistance := dsp.distTo[v] + dsp.graph[v][w]
-			fmt.Printf("v = %d, w = %d, newDistance = %.3g\n", v, w, newDistance)
 			if dsp.distTo[w] > newDistance {
 				// Edge to w is new best connection from source to w
 				dsp.edgeTo[w] = e
-				fmt.Printf("dsp.edgeTo[w] = %#v\n", dsp.edgeTo[w])
 				dsp.distTo[w] = dsp.distTo[v] + dsp.graph[v][w]
 				// Check if already in the queue and update
 				item, ok := pq[w]
@@ -573,16 +571,13 @@ func (dsp *DijksraSP) findSP(r *http.Request) error {
 	heap.Init(&pq)
 
 	// Loop until the target vertex distance is found
-	fmt.Printf("dsp.target = %v\n", dsp.target)
 	for pq.Len() > 0 {
 		item := heap.Pop(&pq).(*Item)
-		fmt.Printf("item = %#v\n", *item)
 		if item.w == dsp.target {
 			// empty the priority queue to avoid memory leak
 			for pq.Len() > 0 {
 				heap.Pop(&pq)
 			}
-			fmt.Printf("Target %d found, emptied pq\n", dsp.target)
 			return nil
 		}
 		relax(item.w)
@@ -616,7 +611,6 @@ func (dsp *DijksraSP) plotSP() error {
 	for {
 		v := e.v
 		w := e.w
-		fmt.Printf("v=%d, w=%d\n", v, w)
 		start := dsp.location[v]
 		end := dsp.location[w]
 		x1 := real(start)
@@ -661,7 +655,6 @@ func (dsp *DijksraSP) plotSP() error {
 		}
 
 		// move forward to the next edge
-		fmt.Printf("move forward to the next edge: %#v\n", dsp.edgeTo[v])
 		e = dsp.edgeTo[v]
 		if e.w != v {
 			e.v, e.w = e.w, e.v
